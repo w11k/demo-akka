@@ -23,7 +23,6 @@ object Main extends Logging {
       }
     }
     finally {
-      Thread sleep 1000 // Let's wait until our actors are finished.
       pingPong.stop
     }
   }

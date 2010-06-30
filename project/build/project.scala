@@ -41,10 +41,19 @@ class DemoAkkaParentProject(info: ProjectInfo) extends ParentProject(info) {
   def akkaModule(module: String) = "se.scalablesolutions.akka" %% ("akka-" + module) % AkkaVersion
 
   // Subprojects
-  val simpleProject = project("demo-akka-simple", "demo-akka-simple", new DemoAkkaSimpleProject(_))
+  val simpleProject  = project("demo-akka-simple",  "demo-akka-simple",  new DemoAkkaSimpleProject(_))
+  val bankingProject = project("demo-akka-banking", "demo-akka-banking", new DemoAkkaBankingProject(_))
 
   /** Simple subproject. */
   class DemoAkkaSimpleProject(info: ProjectInfo) extends DefaultProject(info) {
+
+    // Dependencies
+    lazy val akkaCore = akkaModule("core")
+    lazy val specs    = "org.scala-tools.testing" %% "specs" % "1.6.5-SNAPSHOT" % "test"
+  }
+
+  /** Banking subproject. */
+  class DemoAkkaBankingProject(info: ProjectInfo) extends DefaultProject(info) {
 
     // Dependencies
     lazy val akkaCore = akkaModule("core")

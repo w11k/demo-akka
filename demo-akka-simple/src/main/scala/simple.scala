@@ -33,7 +33,7 @@ object Main extends Logging {
  * Simple actor receiving Ping messages and replying with Pong messages.
  */
 class PingPong extends Actor with Logging {
-  log ifInfo "PingPong created."
+  log ifDebug "PingPong created."
 
   override def receive = {
     case Ping =>

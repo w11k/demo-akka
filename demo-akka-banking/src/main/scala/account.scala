@@ -1,7 +1,8 @@
 package com.weiglewilczek.demo.akka
 package banking
 
-import se.scalablesolutions.akka.actor.Actor
+import se.scalablesolutions.akka.actor.Transactor
+import se.scalablesolutions.akka.stm.Ref
 import se.scalablesolutions.akka.util.Logging
 
 /**
@@ -12,25 +13,34 @@ import se.scalablesolutions.akka.util.Logging
  * <li>Withdraw: Decreases the balance by the given amount; no reply</li>
  * </ul>
  */
-class Account extends Actor with Logging {
+class Account extends Transactor with Logging {
   log ifDebug "Account created."
 
   override def receive = {
-    case GetBalance       => self reply Balance(balance)
+    case GetBalance       => self reply Balance(balanceValue)
     case Deposit(amount)  => deposit(amount)
     case Withdraw(amount) => withdraw(amount)
   }
 
-  private var balance = 0
+  private val balance = Ref(0)
+
+  private def balanceValue = balance getOrElse 0
 
   private def deposit(amount: Int) {
-    balance += amount
-    log ifInfo "New balance after Deposit(%s) = %s".format(amount, balance)
+    balance swap balanceValue + amount
+    log ifInfo "New balance after Deposit(%s) = %s".format(amount, balanceValue)
   }
 
   private def withdraw(amount: Int) {
-    balance -= amount
-    log ifInfo "New balance after Deposit(%s) = %s".format(amount, balance)
+    val newValue = balanceValue - amount
+    if (newValue < -10) {
+      log ifWarning "Account overdrawn! Aborting by throwing an OverdrawException."
+      throw new OverdrawException
+    }
+    else {
+      balance swap newValue
+      log ifInfo "New balance after Deposit(%s) = %s".format(amount, newValue)
+    }
   }
 }
 
@@ -45,3 +55,6 @@ case class Deposit(amount: Int)
 
 /** Message to withdraw the given amount. */
 case class Withdraw(amount: Int)
+
+/** Aborts a withdrawl. */
+class OverdrawException extends RuntimeException

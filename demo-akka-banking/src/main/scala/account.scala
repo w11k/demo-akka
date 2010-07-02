@@ -3,7 +3,6 @@ package banking
 
 import se.scalablesolutions.akka.actor.Transactor
 import se.scalablesolutions.akka.stm.Ref
-import se.scalablesolutions.akka.util.Logging
 
 /**
  * Actor for a bank account. Receives the following messages:
@@ -13,7 +12,7 @@ import se.scalablesolutions.akka.util.Logging
  * <li>Withdraw: Decreases the balance by the given amount; no reply</li>
  * </ul>
  */
-class Account extends Transactor with Logging {
+class Account extends Transactor {
   log ifDebug "Account created."
 
   override def receive = {

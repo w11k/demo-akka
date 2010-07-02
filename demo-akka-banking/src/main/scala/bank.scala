@@ -1,7 +1,6 @@
 package com.weiglewilczek.demo.akka
 package banking
 
-import se.scalablesolutions.akka.util.Logging
 import se.scalablesolutions.akka.actor.{ ActorRef, Transactor }
 
 /**
@@ -10,7 +9,7 @@ import se.scalablesolutions.akka.actor.{ ActorRef, Transactor }
  * <li>Transfer: Transfers the given amount from the given from-account to the given to-account; no reply</li>
  * </ul>
  */
-class Bank extends Transactor with Logging {
+class Bank extends Transactor {
   log ifDebug "Bank created."
 
   override def receive = {

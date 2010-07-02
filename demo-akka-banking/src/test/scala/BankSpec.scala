@@ -1,6 +1,9 @@
 package com.weiglewilczek.demo.akka
 package banking
 
+import Account._
+import Bank._
+
 import org.specs.Specification
 import se.scalablesolutions.akka.actor.Actor._
 

@@ -5,6 +5,30 @@ import se.scalablesolutions.akka.actor.Transactor
 import se.scalablesolutions.akka.stm.Ref
 
 /**
+ * API for Account actor: Messages, exceptions etc.
+ */
+object Account {
+
+  /** Base message type. */
+  sealed trait AccountMessage
+
+  /** Message to ask for the balance. */
+  case object GetBalance extends AccountMessage
+
+  /** Message to answer with the balance. */
+  case class Balance(vlaue: Int) extends AccountMessage
+
+  /** Message to disposit the given amount. */
+  case class Deposit(amount: Int) extends AccountMessage
+
+  /** Message to withdraw the given amount. */
+  case class Withdraw(amount: Int) extends AccountMessage
+
+  /** Aborts a withdrawl. */
+  class OverdrawException extends RuntimeException
+}
+
+/**
  * Actor for a bank account. Receives the following messages:
  * <ul>
  * <li>GetBalance: Replies with Balance</li>
@@ -13,6 +37,8 @@ import se.scalablesolutions.akka.stm.Ref
  * </ul>
  */
 class Account extends Transactor {
+  import Account._
+
   log ifDebug "Account created."
 
   override def receive = {
@@ -42,18 +68,3 @@ class Account extends Transactor {
     }
   }
 }
-
-/** Message to ask for the balance. */
-case object GetBalance
-
-/** Message to answer with the balance. */
-case class Balance(vlaue: Int)
-
-/** Message to disposit the given amount. */
-case class Deposit(amount: Int)
-
-/** Message to withdraw the given amount. */
-case class Withdraw(amount: Int)
-
-/** Aborts a withdrawl. */
-class OverdrawException extends RuntimeException

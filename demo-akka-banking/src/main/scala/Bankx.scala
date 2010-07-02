@@ -1,7 +1,21 @@
 package com.weiglewilczek.demo.akka
 package banking
 
+import Account._
+
 import se.scalablesolutions.akka.actor.{ ActorRef, Transactor }
+
+/**
+ * API for Bank actor: Messages, exceptions etc.
+ */
+object Bank {
+
+  /** Base message type. */
+  sealed trait BankMessage
+
+  /** Message to transfer the given amount from the given from-account to the given to-account. */
+  case class Transfer(amount: Int, from: ActorRef, to: ActorRef) extends BankMessage
+}
 
 /**
  * Actor for banking transactions. Receives the following messages:
@@ -10,6 +24,8 @@ import se.scalablesolutions.akka.actor.{ ActorRef, Transactor }
  * </ul>
  */
 class Bank extends Transactor {
+  import Bank._
+
   log ifDebug "Bank created."
 
   override def receive = {
@@ -22,6 +38,3 @@ class Bank extends Transactor {
     from ! Withdraw(amount)
   }
 }
-
-/** Message to transfer the given amount from the given from-account to the given to-account. */
-case class Transfer(amount: Int, from: ActorRef, to: ActorRef)
